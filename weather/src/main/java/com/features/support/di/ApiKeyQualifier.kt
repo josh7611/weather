@@ -1,4 +1,4 @@
-package com.features.weather.data.config
+package com.features.support.di
 
 import javax.inject.Qualifier
 

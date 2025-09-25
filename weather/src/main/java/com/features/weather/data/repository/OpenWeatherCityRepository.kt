@@ -5,7 +5,7 @@ import com.features.weather.domain.model.CitySearchResult
 import com.features.weather.domain.common.Result
 import com.features.weather.domain.repository.CitySearchRepository
 import com.features.weather.data.dto.CitySearchDto
-import com.features.weather.data.config.OpenWeatherApiKey
+import com.features.support.di.OpenWeatherApiKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

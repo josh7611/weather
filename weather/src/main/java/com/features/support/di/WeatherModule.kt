@@ -9,7 +9,6 @@ import com.features.weather.domain.repository.WeatherRepository
 import com.features.weather.domain.repository.CitySearchRepository
 import com.features.weather.data.network.WeatherApiService
 import com.features.weather.data.network.GeocodingApiService
-import com.features.weather.data.config.OpenWeatherApiKey
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
