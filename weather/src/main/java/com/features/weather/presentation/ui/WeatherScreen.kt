@@ -142,7 +142,7 @@ private fun WeatherHeader(
                 Spacer(modifier = Modifier.width(8.dp))
                 TextButton(onClick = onCityClick) {
                     Text(
-                        text = selectedCity.ifEmpty { "Select City" },
+                        text = selectedCity.ifEmpty { "Search City" },
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer

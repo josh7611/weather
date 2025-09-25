@@ -3,6 +3,7 @@ package com.features.weather.presentation.state
 import com.features.weather.domain.model.WeatherData
 import com.features.weather.domain.model.DailyWeather
 import com.features.weather.domain.model.City
+import com.features.weather.domain.model.CitySearchResult
 
 /**
  * UI State for Weather Screen following Clean Architecture
@@ -22,7 +23,7 @@ data class WeatherUiState(
  */
 data class CitySelectionUiState(
     val savedCities: List<City> = emptyList(),
-    val searchResults: List<City> = emptyList(),
+    val searchResults: List<CitySearchResult> = emptyList(),
     val selectedCity: City? = null,
     val searchQuery: String = "",
     val isLoading: Boolean = false,

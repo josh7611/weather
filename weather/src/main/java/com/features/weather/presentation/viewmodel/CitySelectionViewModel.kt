@@ -130,7 +130,7 @@ class CitySelectionViewModel @Inject constructor(
     }
 
     /**
-     * Select a city and set it as the current city
+     * Select a city and update weather data
      */
     private fun selectCity(city: com.features.weather.domain.model.City) {
         viewModelScope.launch {
@@ -142,6 +142,8 @@ class CitySelectionViewModel @Inject constructor(
                         selectedCity = city,
                         isLoading = false
                     )
+                    // Note: Weather update will be handled by WeatherViewModel
+                    // when it observes the selected city change
                 }
                 is Result.Error -> {
                     _uiState.value = _uiState.value.copy(

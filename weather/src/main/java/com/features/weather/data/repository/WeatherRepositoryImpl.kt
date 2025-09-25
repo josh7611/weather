@@ -2,7 +2,6 @@ package com.features.weather.data.repository
 
 import com.features.weather.data.mapper.toDomainModel
 import com.features.weather.domain.common.Result
-import com.features.weather.domain.model.City
 import com.features.weather.domain.model.WeatherData
 import com.features.weather.domain.model.WeatherForecast
 import com.features.weather.domain.repository.WeatherRepository
@@ -98,23 +97,6 @@ class WeatherRepositoryImpl @Inject constructor(
                     Result.Success(forecastResponseDto.toDomainModel())
                 } else {
                     Result.Error(Exception("Failed to fetch forecast data: ${response.message()}"))
-                }
-            } catch (e: Exception) {
-                Result.Error(e)
-            }
-        }
-    }
-
-    override suspend fun searchCities(query: String): Result<List<City>> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val response = weatherApiService.searchCities(query, 5, API_KEY)
-                if (response.isSuccessful && response.body() != null) {
-                    // Use specific mapper function for List<CitySearchDto>
-                    val citySearchDtoList = response.body()!!
-                    Result.Success(citySearchDtoList.toDomainModel())
-                } else {
-                    Result.Error(Exception("Failed to search cities: ${response.message()}"))
                 }
             } catch (e: Exception) {
                 Result.Error(e)

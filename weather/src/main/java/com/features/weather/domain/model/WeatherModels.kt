@@ -53,5 +53,6 @@ data class City(
     val country: String,
     val latitude: Double,
     val longitude: Double,
-    val isSelected: Boolean = false
+    val isSelected: Boolean = false,
+    val lastUsedTime: Long = System.currentTimeMillis()
 )

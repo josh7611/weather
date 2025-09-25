@@ -36,11 +36,6 @@ interface WeatherRepository {
         latitude: Double,
         longitude: Double
     ): Result<WeatherForecast>
-
-    /**
-     * Search for cities by name
-     */
-    suspend fun searchCities(query: String): Result<List<City>>
 }
 
 /**

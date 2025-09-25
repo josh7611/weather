@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.features.weather.domain.model.City
+import com.features.weather.domain.model.CitySearchResult
 import com.features.weather.presentation.state.CitySelectionUiState
 import com.features.weather.presentation.state.CitySelectionUiEvent
 import com.features.weather.presentation.viewmodel.CitySelectionViewModel
@@ -109,7 +110,15 @@ private fun CitySelectionScreenContent(
                 uiState.searchQuery.isNotEmpty() && uiState.searchResults.isNotEmpty() -> {
                     SearchResultsSection(
                         searchResults = uiState.searchResults,
-                        onCityAdd = { city ->
+                        onCityAdd = { citySearchResult ->
+                            // Convert CitySearchResult to City for the event with current timestamp
+                            val city = City(
+                                name = citySearchResult.name,
+                                country = citySearchResult.country,
+                                latitude = citySearchResult.lat ?: 0.0,
+                                longitude = citySearchResult.lon ?: 0.0,
+                                lastUsedTime = System.currentTimeMillis() // Set current time when adding
+                            )
                             onEvent(CitySelectionUiEvent.AddCity(city))
                         }
                     )
@@ -215,8 +224,8 @@ private fun LoadingSection() {
  */
 @Composable
 private fun SearchResultsSection(
-    searchResults: List<City>,
-    onCityAdd: (City) -> Unit
+    searchResults: List<CitySearchResult>,
+    onCityAdd: (CitySearchResult) -> Unit
 ) {
     Column {
         Text(
@@ -245,7 +254,7 @@ private fun SearchResultsSection(
  */
 @Composable
 private fun SearchResultItem(
-    city: City,
+    city: CitySearchResult,
     onAdd: () -> Unit
 ) {
     Card(
@@ -458,8 +467,8 @@ private fun CitySelectionScreenSearchPreview() {
                 savedCities = listOf(),
                 searchQuery = "Paris",
                 searchResults = listOf(
-                    City("Paris", "FR", 48.8566, 2.3522),
-                    City("Paris", "US", 33.6617, -95.5555)
+                    CitySearchResult("Paris", "FR", null, 48.8566, 2.3522),
+                    CitySearchResult("Paris", "US", "Texas", 33.6617, -95.5555)
                 )
             ),
             onEvent = {},

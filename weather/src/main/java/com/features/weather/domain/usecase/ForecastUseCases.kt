@@ -2,7 +2,9 @@ package com.features.weather.domain.usecase
 
 import com.features.weather.domain.common.Result
 import com.features.weather.domain.model.WeatherForecast
+import com.features.weather.domain.model.CitySearchResult
 import com.features.weather.domain.repository.WeatherRepository
+import com.features.weather.domain.repository.CitySearchRepository
 import javax.inject.Inject
 
 /**
@@ -29,12 +31,12 @@ class GetWeatherForecastByCoordinatesUseCase @Inject constructor(
 }
 
 /**
- * Use case for searching cities
+ * Use case for searching cities using OpenWeatherMap Geocoding API
  */
 class SearchCitiesUseCase @Inject constructor(
-    private val weatherRepository: WeatherRepository
+    private val citySearchRepository: CitySearchRepository
 ) {
-    suspend operator fun invoke(query: String): Result<List<com.features.weather.domain.model.City>> {
-        return weatherRepository.searchCities(query)
+    suspend operator fun invoke(query: String): Result<List<CitySearchResult>> {
+        return citySearchRepository.searchCities(query)
     }
 }
