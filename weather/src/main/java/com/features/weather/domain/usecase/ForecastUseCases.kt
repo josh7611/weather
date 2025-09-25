@@ -2,7 +2,7 @@ package com.features.weather.domain.usecase
 
 import com.features.weather.domain.common.Result
 import com.features.weather.domain.model.WeatherForecast
-import com.features.weather.domain.model.CitySearchResult
+import com.features.weather.domain.repository.CitySearchResult
 import com.features.weather.domain.repository.WeatherRepository
 import com.features.weather.domain.repository.CitySearchRepository
 import javax.inject.Inject

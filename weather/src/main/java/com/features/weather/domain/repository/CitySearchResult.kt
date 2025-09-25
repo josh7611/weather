@@ -1,4 +1,4 @@
-package com.features.weather.domain.model
+package com.features.weather.domain.repository
 
 /**
  * Represents a city search result for city selection/search

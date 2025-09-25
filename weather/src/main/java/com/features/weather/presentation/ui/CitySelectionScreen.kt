@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.features.weather.domain.model.City
-import com.features.weather.domain.model.CitySearchResult
+import com.features.weather.domain.repository.CitySearchResult
 import com.features.weather.presentation.state.CitySelectionUiState
 import com.features.weather.presentation.state.CitySelectionUiEvent
 import com.features.weather.presentation.viewmodel.CitySelectionViewModel

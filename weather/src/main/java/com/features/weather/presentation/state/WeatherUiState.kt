@@ -3,7 +3,7 @@ package com.features.weather.presentation.state
 import com.features.weather.domain.model.WeatherData
 import com.features.weather.domain.model.DailyWeather
 import com.features.weather.domain.model.City
-import com.features.weather.domain.model.CitySearchResult
+import com.features.weather.domain.repository.CitySearchResult
 
 /**
  * UI State for Weather Screen following Clean Architecture

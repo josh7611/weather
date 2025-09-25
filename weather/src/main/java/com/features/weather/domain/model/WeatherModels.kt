@@ -44,15 +44,3 @@ data class WeatherForecast(
     val currentWeather: WeatherData,
     val dailyForecasts: List<DailyWeather>
 )
-
-/**
- * Domain model for city information
- */
-data class City(
-    val name: String,
-    val country: String,
-    val latitude: Double,
-    val longitude: Double,
-    val isSelected: Boolean = false,
-    val lastUsedTime: Long = System.currentTimeMillis()
-)
