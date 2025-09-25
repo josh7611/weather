@@ -7,4 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Weather App Icon Colors -->
+    <color name="weather_icon_background">#FF4A90E2</color>
+    <color name="weather_sun_color">#FFFFD700</color>
+    <color name="weather_cloud_color">#FFFFFFFF</color>
+    <color name="weather_rain_color">#FF87CEEB</color>
 </resources>

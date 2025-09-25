@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Background circle -->
+    <path
+        android:fillColor="@color/weather_icon_background"
+        android:pathData="M54,54m-50,0a50,50 0,1 1,100 0a50,50 0,1 1,-100 0" />
+    <!-- Sun -->
+    <group android:translateX="32" android:translateY="28">
+        <!-- Sun rays -->
+        <path
+            android:fillColor="@color/weather_sun_color"
+            android:strokeWidth="2"
+            android:strokeLineCap="round"
+            android:strokeColor="@color/weather_sun_color"
+            android:pathData="M22,2 L22,6 M22,42 L22,46 M6,24 L2,24 M46,24 L42,24 M38.36,9.64 L35.54,12.46 M12.46,35.54 L9.64,38.36 M9.64,9.64 L12.46,12.46 M35.54,35.54 L38.36,38.36" />
+        <!-- Sun circle (r=10) -->
+        <path
+            android:fillColor="@color/weather_sun_color"
+            android:pathData="M22,24 m -10,0 a 10,10 0 1,0 20,0 a 10,10 0 1,0 -20,0" />
+    </group>
+    <!-- Cloud -->
+    <group android:translateX="18" android:translateY="45">
+        <path
+            android:fillColor="@color/weather_cloud_color"
+            android:pathData="M 48 20 C 48 11.163 40.837 4 32 4 C 25.787 4 20.407 7.787 18.1 13.2 C 16.775 12.433 15.24 12 13.6 12 C 8.075 12 3.6 16.475 3.6 22 C 1.567 22 0 23.567 0 25.6 C 0 27.633 1.567 29.2 3.6 29.2 L 44.8 29.2 C 46.567 29.2 48 27.767 48 26 C 48 22.687 45.313 20 42 20 Z" />
+    </group>
+    <!-- Light rain drops (r=1.5) -->
+    <group android:translateX="30" android:translateY="70">
+        <path android:fillColor="@color/weather_rain_color" android:pathData="M5,5 m -1.5,0 a 1.5,1.5 0 1,0 3,0 a 1.5,1.5 0 1,0 -3,0" />
+        <path android:fillColor="@color/weather_rain_color" android:pathData="M15,8 m -1.5,0 a 1.5,1.5 0 1,0 3,0 a 1.5,1.5 0 1,0 -3,0" />
+        <path android:fillColor="@color/weather_rain_color" android:pathData="M25,5 m -1.5,0 a 1.5,1.5 0 1,0 3,0 a 1.5,1.5 0 1,0 -3,0" />
+        <path android:fillColor="@color/weather_rain_color" android:pathData="M35,8 m -1.5,0 a 1.5,1.5 0 1,0 3,0 a 1.5,1.5 0 1,0 -3,0" />
+    </group>
+</vector>
