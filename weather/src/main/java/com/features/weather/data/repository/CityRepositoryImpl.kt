@@ -155,13 +155,8 @@ class CityRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getSelectedCity(): Result<City?> {
-        return try {
-            val selectedCity = _savedCities.value.find { it.isSelected } ?: _selectedCity.value
-            Result.Success(selectedCity)
-        } catch (e: Exception) {
-            Result.Error(e)
-        }
+    override fun observeSelectedCity(): Flow<City?> {
+        return _selectedCity.asStateFlow()
     }
 
     /**

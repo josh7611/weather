@@ -52,12 +52,12 @@ class SetSelectedCityUseCase @Inject constructor(
 }
 
 /**
- * Use case for getting currently selected city
+ * Use case for getting currently selected city as a Flow
  */
 class GetSelectedCityUseCase @Inject constructor(
     private val cityRepository: CityRepository
 ) {
-    suspend operator fun invoke(): Result<City?> {
-        return cityRepository.getSelectedCity()
+    operator fun invoke(): Flow<City?> {
+        return cityRepository.observeSelectedCity()
     }
 }

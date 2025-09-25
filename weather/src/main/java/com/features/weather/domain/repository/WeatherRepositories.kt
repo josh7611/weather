@@ -63,7 +63,7 @@ interface CityRepository {
     suspend fun setSelectedCity(cityName: String): Result<Unit>
 
     /**
-     * Get currently selected city
+     * Observe the currently selected city as a Flow for reactive updates
      */
-    suspend fun getSelectedCity(): Result<City?>
+    fun observeSelectedCity(): Flow<City?>
 }

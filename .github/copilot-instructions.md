@@ -156,3 +156,24 @@ fun WeatherResponse.toDomainModel(): WeatherData {
 - Use **secure storage** for sensitive data
 - Implement **proper certificate validation** for network connections
 - Follow **Android security best practices** for permissions and data access
+
+## Reactive Data Layer Patterns
+
+- **One-shot operations:**
+    - Use `suspend fun` for single, immediate results (e.g., fetch from network or database once).
+    - Example:
+      ```kotlin
+      suspend fun getWeatherForecast(city: String): Result<WeatherForecast>
+      ```
+- **Continuous/observable data:**
+    - Use `Flow` for streams of data that may change over time (e.g., observing selected city, saved cities, or user preferences).
+    - Example:
+      ```kotlin
+      fun observeSelectedCity(): Flow<City?>
+      fun getSavedCities(): Flow<List<City>>
+      ```
+
+- **Guideline:**
+    - Always prefer Flow for any data that can change and should be observed by the UI or other layers.
+    - Use suspend functions only for operations that are not expected to emit updates after the initial result.
+

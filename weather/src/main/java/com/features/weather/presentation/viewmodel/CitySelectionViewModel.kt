@@ -71,16 +71,8 @@ class CitySelectionViewModel @Inject constructor(
      */
     private fun loadSelectedCity() {
         viewModelScope.launch {
-            when (val result = getSelectedCityUseCase()) {
-                is Result.Success -> {
-                    _uiState.value = _uiState.value.copy(selectedCity = result.data)
-                }
-                is Result.Error -> {
-                    _uiState.value = _uiState.value.copy(error = result.exception.message)
-                }
-                is Result.Loading -> {
-                    _uiState.value = _uiState.value.copy(isLoading = true)
-                }
+            getSelectedCityUseCase().collect { selectedCity ->
+                _uiState.value = _uiState.value.copy(selectedCity = selectedCity)
             }
         }
     }

@@ -28,7 +28,6 @@ class WeatherViewModel @Inject constructor(
     val uiState: StateFlow<WeatherUiState> = _uiState.asStateFlow()
 
     init {
-        loadInitialWeatherData()
         observeSelectedCityChanges()
     }
 
@@ -42,33 +41,6 @@ class WeatherViewModel @Inject constructor(
             is WeatherUiEvent.SelectCity -> loadWeatherForCity(event.cityName)
             is WeatherUiEvent.LoadWeatherForCity -> loadWeatherForCity(event.cityName)
             is WeatherUiEvent.LoadWeatherForCoordinates -> loadWeatherForCoordinates(event.lat, event.lon)
-        }
-    }
-
-    /**
-     * Load initial weather data for selected city or default city
-     */
-    private fun loadInitialWeatherData() {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
-
-            when (val result = getSelectedCityUseCase()) {
-                is Result.Success -> {
-                    val city = result.data
-                    if (city != null) {
-                        loadWeatherForCity(city.name)
-                    } else {
-                        loadWeatherForCity("Taipei")
-                    }
-                }
-                is Result.Error -> {
-                    // Fallback to default city
-                    loadWeatherForCity("Taipei")
-                }
-                is Result.Loading -> {
-                    _uiState.value = _uiState.value.copy(isLoading = true)
-                }
-            }
         }
     }
 
@@ -215,25 +187,9 @@ class WeatherViewModel @Inject constructor(
      */
     private fun observeSelectedCityChanges() {
         viewModelScope.launch {
-            // Create a flow that periodically checks for selected city changes
-            flow {
-                while (true) {
-                    when (val result = getSelectedCityUseCase()) {
-                        is Result.Success -> {
-                            val city = result.data
-                            emit(city?.name ?: "Taipei")
-                        }
-                        is Result.Error -> {
-                            emit("Taipei") // Fallback to default
-                        }
-                        is Result.Loading -> {
-                            // Continue with current state
-                        }
-                    }
-                    kotlinx.coroutines.delay(1000) // Check every second
-                }
-            }
-                .distinctUntilChanged() // Only emit when city actually changes
+            getSelectedCityUseCase()
+                .map { it?.name ?: "Taipei" }
+                .distinctUntilChanged()
                 .collect { cityName ->
                     if (cityName != _uiState.value.selectedCity) {
                         loadWeatherForCity(cityName)
