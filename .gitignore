@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Environment properties containing sensitive data (API keys, etc.)
+environment.properties

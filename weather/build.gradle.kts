@@ -1,9 +1,23 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     kotlin("kapt")
+}
+
+// Load environment properties with better error handling
+val environmentProperties = Properties()
+val environmentPropertiesFile = rootProject.file("environment.properties")
+if (environmentPropertiesFile.exists()) {
+    try {
+        environmentProperties.load(FileInputStream(environmentPropertiesFile))
+    } catch (e: Exception) {
+        println("Warning: Could not load environment.properties: ${e.message}")
+    }
 }
 
 android {
@@ -14,6 +28,13 @@ android {
         minSdk = 26
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        // Read API key from environment.properties for secure storage
+        val apiKey = environmentProperties.getProperty("WEATHER_API_KEY") ?: "DEFAULT_API_KEY"
+        buildConfigField("String", "WEATHER_API_KEY", "\"$apiKey\"")
+
+        // Debug logging to verify the key is being read
+        println("BuildConfig: WEATHER_API_KEY = $apiKey")
     }
 
     buildTypes {
@@ -37,6 +58,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true  // Enable BuildConfig generation
     }
 }
 

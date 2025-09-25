@@ -6,6 +6,7 @@ import com.features.weather.domain.model.City
 import com.features.weather.domain.model.WeatherData
 import com.features.weather.domain.model.WeatherForecast
 import com.features.weather.domain.repository.WeatherRepository
+import com.features.weather.BuildConfig
 import com.features.weather.data.network.WeatherApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -22,7 +23,8 @@ class WeatherRepositoryImpl @Inject constructor(
 ) : WeatherRepository {
 
     companion object {
-        private const val API_KEY = "YOUR_API_KEY_HERE" // TODO: Move to BuildConfig or secure storage
+        // API key now securely stored in BuildConfig
+        private val API_KEY = BuildConfig.WEATHER_API_KEY
     }
 
     override suspend fun getCurrentWeather(cityName: String): Result<WeatherData> {
@@ -30,7 +32,9 @@ class WeatherRepositoryImpl @Inject constructor(
             try {
                 val response = weatherApiService.getCurrentWeather(cityName, API_KEY)
                 if (response.isSuccessful && response.body() != null) {
-                    Result.Success(response.body()!!.toDomainModel())
+                    // Use specific mapper function for WeatherResponseDto
+                    val weatherResponseDto = response.body()!!
+                    Result.Success(weatherResponseDto.toDomainModel())
                 } else {
                     Result.Error(Exception("Failed to fetch weather data: ${response.message()}"))
                 }
@@ -50,7 +54,9 @@ class WeatherRepositoryImpl @Inject constructor(
                     latitude, longitude, API_KEY
                 )
                 if (response.isSuccessful && response.body() != null) {
-                    Result.Success(response.body()!!.toDomainModel())
+                    // Use specific mapper function for WeatherResponseDto
+                    val weatherResponseDto = response.body()!!
+                    Result.Success(weatherResponseDto.toDomainModel())
                 } else {
                     Result.Error(Exception("Failed to fetch weather data: ${response.message()}"))
                 }
@@ -65,7 +71,9 @@ class WeatherRepositoryImpl @Inject constructor(
             try {
                 val response = weatherApiService.getWeatherForecast(cityName, API_KEY)
                 if (response.isSuccessful && response.body() != null) {
-                    Result.Success(response.body()!!.toDomainModel())
+                    // Use specific mapper function for ForecastResponseDto
+                    val forecastResponseDto = response.body()!!
+                    Result.Success(forecastResponseDto.toDomainModel())
                 } else {
                     Result.Error(Exception("Failed to fetch forecast data: ${response.message()}"))
                 }
@@ -85,7 +93,9 @@ class WeatherRepositoryImpl @Inject constructor(
                     latitude, longitude, API_KEY
                 )
                 if (response.isSuccessful && response.body() != null) {
-                    Result.Success(response.body()!!.toDomainModel())
+                    // Use specific mapper function for ForecastResponseDto
+                    val forecastResponseDto = response.body()!!
+                    Result.Success(forecastResponseDto.toDomainModel())
                 } else {
                     Result.Error(Exception("Failed to fetch forecast data: ${response.message()}"))
                 }
@@ -100,7 +110,9 @@ class WeatherRepositoryImpl @Inject constructor(
             try {
                 val response = weatherApiService.searchCities(query, 5, API_KEY)
                 if (response.isSuccessful && response.body() != null) {
-                    Result.Success(response.body()!!.toDomainModel())
+                    // Use specific mapper function for List<CitySearchDto>
+                    val citySearchDtoList = response.body()!!
+                    Result.Success(citySearchDtoList.toDomainModel())
                 } else {
                     Result.Error(Exception("Failed to search cities: ${response.message()}"))
                 }
