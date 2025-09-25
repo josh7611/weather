@@ -241,10 +241,11 @@ class CityRepositoryImpl @Inject constructor(
      */
     private fun getDefaultCities(): List<City> {
         return listOf(
-            City("New York", "US", 40.7128, -74.0060, lastUsedTime = System.currentTimeMillis() - 86400000), // 1 day ago
-            City("London", "GB", 51.5074, -0.1278, lastUsedTime = System.currentTimeMillis() - 172800000), // 2 days ago
-            City("Tokyo", "JP", 35.6762, 139.6503, lastUsedTime = System.currentTimeMillis() - 259200000), // 3 days ago
-            City("Sydney", "AU", -33.8688, 151.2093, lastUsedTime = System.currentTimeMillis() - 345600000) // 4 days ago
+            City("Taipei", "TW", 25.0330, 121.5654, lastUsedTime = System.currentTimeMillis() - 345600000),
+            City("New York", "US", 40.7128, -74.0060, lastUsedTime = System.currentTimeMillis() - 86400000),
+            City("London", "GB", 51.5074, -0.1278, lastUsedTime = System.currentTimeMillis() - 172800000),
+            City("Tokyo", "JP", 35.6762, 139.6503, lastUsedTime = System.currentTimeMillis() - 259200000),
+            City("Sydney", "AU", -33.8688, 151.2093, lastUsedTime = System.currentTimeMillis() - 432000000)
         )
     }
 }

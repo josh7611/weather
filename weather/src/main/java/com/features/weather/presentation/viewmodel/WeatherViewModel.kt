@@ -58,13 +58,12 @@ class WeatherViewModel @Inject constructor(
                     if (city != null) {
                         loadWeatherForCity(city.name)
                     } else {
-                        // Load weather for default city (New York)
-                        loadWeatherForCity("New York")
+                        loadWeatherForCity("Taipei")
                     }
                 }
                 is Result.Error -> {
                     // Fallback to default city
-                    loadWeatherForCity("New York")
+                    loadWeatherForCity("Taipei")
                 }
                 is Result.Loading -> {
                     _uiState.value = _uiState.value.copy(isLoading = true)
@@ -222,10 +221,10 @@ class WeatherViewModel @Inject constructor(
                     when (val result = getSelectedCityUseCase()) {
                         is Result.Success -> {
                             val city = result.data
-                            emit(city?.name ?: "New York")
+                            emit(city?.name ?: "Taipei")
                         }
                         is Result.Error -> {
-                            emit("New York") // Fallback to default
+                            emit("Taipei") // Fallback to default
                         }
                         is Result.Loading -> {
                             // Continue with current state
