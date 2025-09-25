@@ -1,4 +1,4 @@
-package com.features.weather.ui
+package com.features.weather.presentation.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*

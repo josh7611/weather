@@ -1,10 +1,8 @@
 package com.features.weather.presentation.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Refresh
@@ -14,260 +12,238 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.features.weather.domain.model.DailyWeather
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.features.weather.domain.model.WeatherData
+import com.features.weather.domain.model.DailyWeather
+import com.features.weather.presentation.state.WeatherUiState
 import com.features.weather.presentation.state.WeatherUiEvent
 import com.features.weather.presentation.viewmodel.WeatherViewModel
 import kotlin.math.roundToInt
 
 /**
- * Main Weather App composable following Clean Architecture
- * Implements state hoisting and unidirectional data flow
+ * Main weather screen following Clean Architecture patterns
+ * Implements unidirectional data flow and proper state management
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WeatherApp(
+fun WeatherScreen(
     modifier: Modifier = Modifier,
+    onNavigateToCitySelection: () -> Unit = {},
     viewModel: WeatherViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    var showCitySelection by remember { mutableStateOf(false) }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    Column(
+    WeatherScreenContent(
+        uiState = uiState,
+        onEvent = viewModel::onEvent,
+        onNavigateToCitySelection = onNavigateToCitySelection,
         modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        // Header with city selector and refresh
-        WeatherHeader(
-            selectedCity = uiState.selectedCity,
-            onCityClick = { showCitySelection = true },
-            onRefreshClick = { viewModel.onEvent(WeatherUiEvent.RefreshWeather) },
-            isLoading = uiState.isLoading
-        )
+    )
+}
 
-        // Error handling
-        uiState.error?.let { error ->
-            ErrorCard(
-                error = error,
-                onDismiss = { viewModel.onEvent(WeatherUiEvent.ClearError) }
-            )
-        }
-
-        // Weather content
-        when {
-            uiState.isLoading && uiState.currentWeather == null -> {
-                LoadingScreen()
+/**
+ * Weather screen content composable with proper state hoisting
+ */
+@Composable
+private fun WeatherScreenContent(
+    uiState: WeatherUiState,
+    onEvent: (WeatherUiEvent) -> Unit,
+    onNavigateToCitySelection: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier.fillMaxSize()) {
+        // Main content
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            item {
+                WeatherHeader(
+                    selectedCity = uiState.selectedCity,
+                    onCityClick = onNavigateToCitySelection,
+                    onRefresh = { onEvent(WeatherUiEvent.RefreshWeather) }
+                )
             }
-            uiState.currentWeather != null -> {
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    // Current weather card
-                    item {
-                        CurrentWeatherCard(
-                            weatherData = uiState.currentWeather!!
-                        )
-                    }
 
-                    // Weekly forecast
-                    if (uiState.weeklyForecast.isNotEmpty()) {
-                        item {
-                            WeeklyForecastSection(
-                                dailyForecasts = uiState.weeklyForecast
-                            )
-                        }
-                    }
+            item {
+                if (uiState.currentWeather != null) {
+                    CurrentWeatherCard(weather = uiState.currentWeather)
                 }
             }
-            else -> {
-                EmptyStateCard()
+
+            item {
+                if (uiState.weeklyForecast.isNotEmpty()) {
+                    WeeklyForecastSection(forecast = uiState.weeklyForecast)
+                }
             }
         }
-    }
 
-    // City selection modal bottom sheet
-    if (showCitySelection) {
-        CitySelectionBottomSheet(
-            onDismiss = { showCitySelection = false },
-            onCitySelected = { cityName: String ->
-                viewModel.onEvent(WeatherUiEvent.SelectCity(cityName))
-                showCitySelection = false
+        // Loading indicator
+        if (uiState.isLoading || uiState.isRefreshing) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.primary
+                )
             }
-        )
+        }
+
+        // Error handling
+        uiState.error?.let { errorMessage ->
+            LaunchedEffect(errorMessage) {
+                // Show snackbar or handle error display
+            }
+        }
     }
 }
 
 /**
- * Header component with city selector and refresh button
+ * Weather header with city selection and refresh functionality
  */
 @Composable
 private fun WeatherHeader(
     selectedCity: String,
     onCityClick: () -> Unit,
-    onRefreshClick: () -> Unit,
-    isLoading: Boolean
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // City selector
-        OutlinedButton(
-            onClick = onCityClick,
-            modifier = Modifier.weight(1f)
-        ) {
-            Icon(
-                imageVector = Icons.Default.LocationOn,
-                contentDescription = "Select city",
-                modifier = Modifier.size(18.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = selectedCity.ifEmpty { "Select City" },
-                fontSize = 16.sp
-            )
-        }
-
-        Spacer(modifier = Modifier.width(16.dp))
-
-        // Refresh button
-        IconButton(
-            onClick = onRefreshClick,
-            enabled = !isLoading
-        ) {
-            if (isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(24.dp)
-                )
-            } else {
-                Icon(
-                    imageVector = Icons.Default.Refresh,
-                    contentDescription = "Refresh weather"
-                )
-            }
-        }
-    }
-}
-
-/**
- * Current weather display card
- */
-@Composable
-private fun CurrentWeatherCard(
-    weatherData: WeatherData
+    onRefresh: () -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        shape = RoundedCornerShape(16.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        )
     ) {
-        Column(
-            modifier = Modifier.padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            // City and description
-            Text(
-                text = "${weatherData.city}, ${weatherData.country}",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
-
-            Text(
-                text = weatherData.description.replaceFirstChar {
-                    if (it.isLowerCase()) it.titlecase() else it.toString()
-                },
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            HorizontalDivider()
-
-            // Temperature section
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1f)
             ) {
-                Column {
+                Icon(
+                    imageVector = Icons.Default.LocationOn,
+                    contentDescription = "Location",
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                TextButton(onClick = onCityClick) {
                     Text(
-                        text = "${weatherData.temperature.roundToInt()}°C",
-                        fontSize = 48.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    Text(
-                        text = "Feels like ${weatherData.feelsLike.roundToInt()}°C",
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        text = selectedCity.ifEmpty { "Select City" },
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
             }
 
-            HorizontalDivider()
-
-            // Weather details grid
-            WeatherDetailsGrid(weatherData = weatherData)
+            IconButton(onClick = onRefresh) {
+                Icon(
+                    imageVector = Icons.Default.Refresh,
+                    contentDescription = "Refresh",
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
         }
     }
 }
 
 /**
- * Weather details in a grid layout
+ * Current weather information card
  */
 @Composable
-private fun WeatherDetailsGrid(
-    weatherData: WeatherData
-) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+private fun CurrentWeatherCard(weather: WeatherData) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            WeatherDetailItem(
-                label = "Min",
-                value = "${weatherData.minTemperature.roundToInt()}°C"
+            // Temperature
+            Text(
+                text = "${weather.temperature.roundToInt()}°",
+                fontSize = 72.sp,
+                fontWeight = FontWeight.Light,
+                color = MaterialTheme.colorScheme.onSurface
             )
-            WeatherDetailItem(
-                label = "Max",
-                value = "${weatherData.maxTemperature.roundToInt()}°C"
-            )
-            WeatherDetailItem(
-                label = "Humidity",
-                value = "${weatherData.humidity}%"
-            )
-        }
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            WeatherDetailItem(
-                label = "Pressure",
-                value = "${weatherData.pressure} hPa"
+            // Description
+            Text(
+                text = weather.description.replaceFirstChar { it.uppercase() },
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
             )
-            WeatherDetailItem(
-                label = "Wind",
-                value = "${weatherData.windSpeed} m/s"
-            )
-            WeatherDetailItem(
-                label = "Direction",
-                value = "${weatherData.windDirection}°"
-            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Weather details
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                WeatherDetailItem(
+                    label = "Feels like",
+                    value = "${weather.feelsLike.roundToInt()}°"
+                )
+                WeatherDetailItem(
+                    label = "Humidity",
+                    value = "${weather.humidity}%"
+                )
+                WeatherDetailItem(
+                    label = "Wind",
+                    value = "${weather.windSpeed.roundToInt()} km/h"
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                WeatherDetailItem(
+                    label = "Pressure",
+                    value = "${weather.pressure} hPa"
+                )
+                WeatherDetailItem(
+                    label = "Min/Max",
+                    value = "${weather.minTemperature.roundToInt()}°/${weather.maxTemperature.roundToInt()}°"
+                )
+                weather.visibility?.let {
+                    WeatherDetailItem(
+                        label = "Visibility",
+                        value = "${it / 1000} km"
+                    )
+                }
+            }
         }
     }
 }
 
 /**
- * Individual weather detail item
+ * Weather detail item component
  */
 @Composable
 private fun WeatherDetailItem(
@@ -280,27 +256,26 @@ private fun WeatherDetailItem(
         Text(
             text = label,
             fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontWeight = FontWeight.Medium
         )
         Text(
             text = value,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium
+            fontSize = 16.sp,
+            color = MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.SemiBold
         )
     }
 }
 
 /**
- * Weekly forecast section with horizontal scroll
+ * Weekly forecast section
  */
 @Composable
-private fun WeeklyForecastSection(
-    dailyForecasts: List<DailyWeather>
-) {
+private fun WeeklyForecastSection(forecast: List<DailyWeather>) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        shape = RoundedCornerShape(16.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -308,17 +283,18 @@ private fun WeeklyForecastSection(
             Text(
                 text = "7-Day Forecast",
                 fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(bottom = 12.dp)
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
-
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(dailyForecasts) { dailyWeather ->
-                    DailyForecastItem(dailyWeather = dailyWeather)
+            forecast.forEach { dailyWeather ->
+                DailyForecastItem(dailyWeather = dailyWeather)
+                if (dailyWeather != forecast.last()) {
+                    Divider(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                    )
                 }
             }
         }
@@ -326,208 +302,102 @@ private fun WeeklyForecastSection(
 }
 
 /**
- * Individual daily forecast item
+ * Daily forecast item component
  */
 @Composable
-private fun DailyForecastItem(
-    dailyWeather: DailyWeather
-) {
-    Card(
-        modifier = Modifier.width(100.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+private fun DailyForecastItem(dailyWeather: DailyWeather) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(
-            modifier = Modifier.padding(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+        // Day of week
+        Text(
+            text = dailyWeather.dayOfWeek,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.weight(0.3f)
+        )
+
+        // Description
+        Text(
+            text = dailyWeather.description.replaceFirstChar { it.uppercase() },
+            fontSize = 14.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(0.4f),
+            textAlign = TextAlign.Center
+        )
+
+        // Temperature range
+        Row(
+            modifier = Modifier.weight(0.3f),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = dailyWeather.dayOfWeek.take(3),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Medium
+                text = "${dailyWeather.minTemperature.roundToInt()}°",
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-
+            Text(
+                text = "/",
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 4.dp)
+            )
             Text(
                 text = "${dailyWeather.maxTemperature.roundToInt()}°",
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Text(
-                text = "${dailyWeather.minTemperature.roundToInt()}°",
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            if (dailyWeather.chanceOfRain > 0) {
-                Text(
-                    text = "${dailyWeather.chanceOfRain}%",
-                    fontSize = 10.sp,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-        }
-    }
-}
-
-/**
- * Loading screen component
- */
-@Composable
-private fun LoadingScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(48.dp)
-            )
-            Text(
-                text = "Loading weather data...",
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
 }
 
 /**
- * Empty state when no weather data is available
+ * Preview functions for development and testing
  */
+@Preview(showBackground = true)
 @Composable
-private fun EmptyStateCard() {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(24.dp)
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Text(
-                text = "No Weather Data",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Text(
-                text = "Please select a city to view weather information",
-                fontSize = 14.sp,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-    }
-}
-
-/**
- * Error card with dismiss functionality
- */
-@Composable
-private fun ErrorCard(
-    error: String,
-    onDismiss: () -> Unit
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.errorContainer
+private fun WeatherScreenPreview() {
+    MaterialTheme {
+        WeatherScreenContent(
+            uiState = WeatherUiState(
+                currentWeather = WeatherData(
+                    temperature = 22.0,
+                    feelsLike = 24.0,
+                    minTemperature = 18.0,
+                    maxTemperature = 26.0,
+                    humidity = 65,
+                    pressure = 1013,
+                    description = "partly cloudy",
+                    iconCode = "02d",
+                    city = "New York",
+                    country = "US",
+                    windSpeed = 15.0,
+                    windDirection = 180,
+                    visibility = 10000
+                ),
+                weeklyForecast = listOf(
+                    DailyWeather(
+                        date = "2024-01-20",
+                        dayOfWeek = "Today",
+                        maxTemperature = 26.0,
+                        minTemperature = 18.0,
+                        description = "sunny",
+                        iconCode = "01d",
+                        humidity = 60,
+                        chanceOfRain = 10
+                    )
+                ),
+                selectedCity = "New York"
+            ),
+            onEvent = {},
+            onNavigateToCitySelection = {}
         )
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(
-                text = "Error",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onErrorContainer
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = error,
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onErrorContainer
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Button(
-                onClick = onDismiss,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.error
-                )
-            ) {
-                Text("Dismiss")
-            }
-        }
-    }
-}
-
-/**
- * City Selection Bottom Sheet Modal
- */
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun CitySelectionBottomSheet(
-    onDismiss: () -> Unit,
-    onCitySelected: (String) -> Unit
-) {
-    val sheetState = rememberModalBottomSheetState()
-
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Text(
-                text = "Select City",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-            // Sample cities - in a real app, this would come from a city search/selection component
-            val sampleCities = listOf(
-                "New York, US",
-                "London, GB",
-                "Tokyo, JP",
-                "Sydney, AU",
-                "Paris, FR",
-                "Berlin, DE"
-            )
-
-            LazyColumn {
-                items(sampleCities) { city ->
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp),
-                        onClick = { onCitySelected(city) }
-                    ) {
-                        Text(
-                            text = city,
-                            modifier = Modifier.padding(16.dp),
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-        }
     }
 }

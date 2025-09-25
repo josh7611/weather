@@ -1,4 +1,4 @@
-package com.features.weather.network
+package com.features.weather.data.network
 
 import com.features.weather.data.dto.WeatherResponseDto
 import com.features.weather.data.dto.ForecastResponseDto

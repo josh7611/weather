@@ -6,7 +6,7 @@ import com.features.weather.domain.model.City
 import com.features.weather.domain.model.WeatherData
 import com.features.weather.domain.model.WeatherForecast
 import com.features.weather.domain.repository.WeatherRepository
-import com.features.weather.network.WeatherApiService
+import com.features.weather.data.network.WeatherApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

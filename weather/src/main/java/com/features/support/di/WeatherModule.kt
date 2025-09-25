@@ -1,10 +1,10 @@
-package com.features.weather.di
+package com.features.support.di
 
 import com.features.weather.data.repository.CityRepositoryImpl
 import com.features.weather.data.repository.WeatherRepositoryImpl
 import com.features.weather.domain.repository.CityRepository
 import com.features.weather.domain.repository.WeatherRepository
-import com.features.weather.network.WeatherApiService
+import com.features.weather.data.network.WeatherApiService
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

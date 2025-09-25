@@ -1,4 +1,4 @@
-package com.features.weather.utils
+package com.features.support.utils
 
 object WeatherUtils {
 
