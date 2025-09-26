@@ -5,8 +5,8 @@ import com.features.weather.domain.model.WeatherForecast
 import com.features.weather.domain.model.DailyWeather
 import com.features.weather.domain.model.WeatherData
 import com.features.weather.domain.repository.WeatherRepository
-import com.features.weather.domain.repository.CitySearchRepository
-import com.features.weather.domain.repository.CitySearchResult
+import com.features.city.domain.repository.CitySearchRepository
+import com.features.city.domain.repository.CitySearchResult
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

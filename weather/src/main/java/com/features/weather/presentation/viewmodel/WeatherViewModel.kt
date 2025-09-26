@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.features.weather.domain.common.Result
 import com.features.weather.domain.usecase.*
+import com.features.city.domain.usecase.GetSelectedCityUseCase
 import com.features.weather.presentation.state.WeatherUiState
 import com.features.weather.presentation.state.WeatherUiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel

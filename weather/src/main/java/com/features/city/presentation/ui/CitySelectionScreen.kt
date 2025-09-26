@@ -1,4 +1,4 @@
-package com.features.weather.presentation.ui
+package com.features.city.presentation.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -7,9 +7,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
@@ -17,19 +17,19 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.features.weather.domain.model.City
-import com.features.weather.domain.repository.CitySearchResult
-import com.features.weather.presentation.state.CitySelectionUiState
-import com.features.weather.presentation.state.CitySelectionUiEvent
-import com.features.weather.presentation.viewmodel.CitySelectionViewModel
+import com.features.city.domain.model.City
+import com.features.city.domain.repository.CitySearchResult
+import com.features.city.presentation.state.CitySelectionUiState
+import com.features.city.presentation.state.CitySelectionUiEvent
+import com.features.city.presentation.viewmodel.CitySelectionViewModel
 
 /**
  * City selection screen following Clean Architecture patterns
@@ -74,7 +74,7 @@ private fun CitySelectionScreenContent(
             navigationIcon = {
                 IconButton(onClick = onNavigateBack) {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back"
                     )
                 }
@@ -123,7 +123,7 @@ private fun CitySelectionScreenContent(
                         }
                     )
                 }
-                uiState.searchQuery.isNotEmpty() && uiState.searchResults.isEmpty() && !uiState.isSearching -> {
+                uiState.searchQuery.isNotEmpty() && uiState.searchResults.isEmpty() -> {
                     EmptySearchSection()
                 }
                 else -> {
@@ -177,7 +177,7 @@ private fun SearchBar(
             if (query.isNotEmpty()) {
                 IconButton(onClick = { onQueryChange("") }) {
                     Icon(
-                        imageVector = Icons.Default.Clear,
+                        imageVector = Icons.Default.Close,
                         contentDescription = "Clear"
                     )
                 }

@@ -1,10 +1,10 @@
-package com.features.weather.data.repository
+package com.features.city.data.repository
 
 import android.content.Context
 import android.content.SharedPreferences
 import com.features.weather.domain.common.Result
-import com.features.weather.domain.model.City
-import com.features.weather.domain.repository.CityRepository
+import com.features.city.domain.model.City
+import com.features.city.domain.repository.CityRepository
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -35,8 +35,30 @@ class CityRepositoryImpl @Inject constructor(
     private val gson = Gson()
 
     // Load saved cities from SharedPreferences on initialization
-    private val _savedCities = MutableStateFlow<List<City>>(loadSavedCities())
+    private val _savedCities = MutableStateFlow<List<City>>(loadOrInitSavedCities())
     private val _selectedCity = MutableStateFlow<City?>(loadSelectedCity())
+
+    /**
+     * Loads saved cities from preferences, or initializes with Taipei if empty
+     */
+    private fun loadOrInitSavedCities(): List<City> {
+        val cities = loadSavedCities()
+        return if (cities.isEmpty()) {
+            val taipei = City(
+                name = "Taipei",
+                country = "TW",
+                latitude = 25.0330,
+                longitude = 121.5654,
+                isSelected = true,
+                lastUsedTime = System.currentTimeMillis()
+            )
+            saveCitiesToPreferences(listOf(taipei))
+            saveSelectedCityToPreferences(taipei)
+            listOf(taipei)
+        } else {
+            cities
+        }
+    }
 
     override fun getSavedCities(): Flow<List<City>> {
         return _savedCities.asStateFlow().map { cities ->

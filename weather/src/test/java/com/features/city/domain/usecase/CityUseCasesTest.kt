@@ -1,8 +1,8 @@
-package com.features.weather.domain.usecase
+package com.features.city.domain.usecase
 
 import com.features.weather.domain.common.Result
-import com.features.weather.domain.model.City
-import com.features.weather.domain.repository.CityRepository
+import com.features.city.domain.model.City
+import com.features.city.domain.repository.CityRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

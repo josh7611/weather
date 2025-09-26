@@ -1,12 +1,12 @@
 package com.features.support.di
 
 import com.features.weather.BuildConfig.WEATHER_API_KEY
-import com.features.weather.data.repository.CityRepositoryImpl
+import com.features.city.data.repository.CityRepositoryImpl
 import com.features.weather.data.repository.WeatherRepositoryImpl
 import com.features.weather.data.repository.OpenWeatherCityRepository
-import com.features.weather.domain.repository.CityRepository
+import com.features.city.domain.repository.CityRepository
 import com.features.weather.domain.repository.WeatherRepository
-import com.features.weather.domain.repository.CitySearchRepository
+import com.features.city.domain.repository.CitySearchRepository
 import com.features.weather.data.network.WeatherApiService
 import com.features.weather.data.network.GeocodingApiService
 import dagger.Binds
@@ -83,7 +83,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @OpenWeatherApiKey
+    @com.features.support.di.OpenWeatherApiKey
     fun provideOpenWeatherApiKey(): String {
         return WEATHER_API_KEY
     }

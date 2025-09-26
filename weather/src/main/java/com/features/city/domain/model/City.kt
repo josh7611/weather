@@ -1,4 +1,4 @@
-package com.features.weather.domain.model
+package com.features.city.domain.model
 
 /**
  * Domain model for city information

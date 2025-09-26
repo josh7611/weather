@@ -1,11 +1,12 @@
-package com.features.weather.presentation.viewmodel
+package com.features.city.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.features.weather.domain.common.Result
-import com.features.weather.domain.usecase.*
-import com.features.weather.presentation.state.CitySelectionUiState
-import com.features.weather.presentation.state.CitySelectionUiEvent
+import com.features.city.domain.usecase.*
+import com.features.city.domain.model.City
+import com.features.city.presentation.state.CitySelectionUiState
+import com.features.city.presentation.state.CitySelectionUiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -124,7 +125,7 @@ class CitySelectionViewModel @Inject constructor(
     /**
      * Select a city and update weather data
      */
-    private fun selectCity(city: com.features.weather.domain.model.City) {
+    private fun selectCity(city: City) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
 
@@ -153,7 +154,7 @@ class CitySelectionViewModel @Inject constructor(
     /**
      * Add a city to saved cities list
      */
-    private fun addCity(city: com.features.weather.domain.model.City) {
+    private fun addCity(city: City) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
 

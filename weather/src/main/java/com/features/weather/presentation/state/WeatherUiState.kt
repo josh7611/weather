@@ -2,8 +2,8 @@ package com.features.weather.presentation.state
 
 import com.features.weather.domain.model.WeatherData
 import com.features.weather.domain.model.DailyWeather
-import com.features.weather.domain.model.City
-import com.features.weather.domain.repository.CitySearchResult
+import com.features.city.domain.model.City
+import com.features.city.domain.repository.CitySearchResult
 
 /**
  * UI State for Weather Screen following Clean Architecture
@@ -19,19 +19,6 @@ data class WeatherUiState(
 )
 
 /**
- * UI State for City Selection Screen
- */
-data class CitySelectionUiState(
-    val savedCities: List<City> = emptyList(),
-    val searchResults: List<CitySearchResult> = emptyList(),
-    val selectedCity: City? = null,
-    val searchQuery: String = "",
-    val isLoading: Boolean = false,
-    val isSearching: Boolean = false,
-    val error: String? = null
-)
-
-/**
  * UI Events for Weather Screen
  * Sealed class representing all possible user interactions
  */
@@ -41,16 +28,4 @@ sealed class WeatherUiEvent {
     data class SelectCity(val cityName: String) : WeatherUiEvent()
     data class LoadWeatherForCity(val cityName: String) : WeatherUiEvent()
     data class LoadWeatherForCoordinates(val lat: Double, val lon: Double) : WeatherUiEvent()
-}
-
-/**
- * UI Events for City Selection Screen
- */
-sealed class CitySelectionUiEvent {
-    data class SearchCities(val query: String) : CitySelectionUiEvent()
-    data class SelectCity(val city: City) : CitySelectionUiEvent()
-    data class AddCity(val city: City) : CitySelectionUiEvent()
-    data class RemoveCity(val cityName: String) : CitySelectionUiEvent()
-    object ClearSearchResults : CitySelectionUiEvent()
-    object ClearError : CitySelectionUiEvent()
 }

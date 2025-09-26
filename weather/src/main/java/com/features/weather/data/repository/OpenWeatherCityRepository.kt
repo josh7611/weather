@@ -1,9 +1,9 @@
 package com.features.weather.data.repository
 
 import com.features.weather.data.network.GeocodingApiService
-import com.features.weather.domain.repository.CitySearchResult
+import com.features.city.domain.repository.CitySearchResult
 import com.features.weather.domain.common.Result
-import com.features.weather.domain.repository.CitySearchRepository
+import com.features.city.domain.repository.CitySearchRepository
 import com.features.weather.data.dto.CitySearchDto
 import com.features.support.di.OpenWeatherApiKey
 import kotlinx.coroutines.Dispatchers

@@ -2,6 +2,7 @@ package com.features.weather.data.mapper
 
 import com.features.weather.data.dto.*
 import com.features.weather.domain.model.*
+import com.features.city.domain.model.City
 import java.text.SimpleDateFormat
 import java.util.*
 
