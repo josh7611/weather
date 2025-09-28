@@ -55,53 +55,79 @@ private fun WeatherScreenContent(
     onNavigateToCitySelection: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier.fillMaxSize()) {
-        // Main content
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            item {
-                WeatherHeader(
-                    selectedCity = uiState.selectedCity,
-                    onCityClick = onNavigateToCitySelection,
-                    onRefresh = { onEvent(WeatherUiEvent.RefreshWeather) }
-                )
-            }
+    val snackbarHostState = remember { SnackbarHostState() }
 
-            item {
-                if (uiState.currentWeather != null) {
-                    CurrentWeatherCard(weather = uiState.currentWeather)
-                }
-            }
-
-            item {
-                if (uiState.weeklyForecast.isNotEmpty()) {
-                    WeeklyForecastSection(forecast = uiState.weeklyForecast)
-                }
-            }
+    // Handle error display with snackbar
+    LaunchedEffect(uiState.error) {
+        uiState.error?.let { errorMessage ->
+            snackbarHostState.showSnackbar(
+                message = errorMessage,
+                actionLabel = "Dismiss",
+                duration = SnackbarDuration.Long
+            )
+            // Clear error after showing snackbar
+            onEvent(WeatherUiEvent.ClearError)
         }
+    }
 
-        // Loading indicator
-        if (uiState.isLoading || uiState.isRefreshing) {
-            Box(
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                snackbar = { data ->
+                    Snackbar(
+                        snackbarData = data,
+                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                        actionColor = MaterialTheme.colorScheme.error
+                    )
+                }
+            )
+        },
+        modifier = modifier
+    ) { paddingValues ->
+        Box(modifier = Modifier.fillMaxSize()) {
+            // Main content
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)),
-                contentAlignment = Alignment.Center
+                    .padding(paddingValues)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                CircularProgressIndicator(
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-        }
+                item {
+                    WeatherHeader(
+                        selectedCity = uiState.selectedCity,
+                        onCityClick = onNavigateToCitySelection,
+                        onRefresh = { onEvent(WeatherUiEvent.RefreshWeather) }
+                    )
+                }
 
-        // Error handling
-        uiState.error?.let { errorMessage ->
-            LaunchedEffect(errorMessage) {
-                // Show snackbar or handle error display
+                item {
+                    if (uiState.currentWeather != null) {
+                        CurrentWeatherCard(weather = uiState.currentWeather)
+                    }
+                }
+
+                item {
+                    if (uiState.weeklyForecast.isNotEmpty()) {
+                        WeeklyForecastSection(forecast = uiState.weeklyForecast)
+                    }
+                }
+            }
+
+            // Loading indicator
+            if (uiState.isLoading || uiState.isRefreshing) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
         }
     }
