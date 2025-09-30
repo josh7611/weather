@@ -17,11 +17,20 @@ A modern Android weather application built with **Jetpack Compose** and **Clean 
 
 ## 🎬 Demo
 
-*Add a GIF or short video of your app in action here*
+### App in Action
+<video width="300" controls>
+  <source src="docs/demo/weather_app_demo.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+*Demo showing weather app functionality including current weather display, city selection, and 7-day forecast navigation*
 
 ## 📱 Screenshots
 
-*Add screenshots of your app here*
+### Main Weather Screen
+<img src="docs/images/weather_app_main_screen.png" alt="Weather App Main Screen" width="300"/>
+
+*Weather forecast display showing current conditions for New Taipei with 30°C temperature, weather details, and 7-day forecast*
 
 ## 🏗️ Architecture
 
@@ -189,15 +198,9 @@ The app uses OpenWeatherMap API with the following endpoints:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 📞 Contact
 
-Your Name - your.email@example.com
-
-Project Link: [https://github.com/your-username/weather-app](https://github.com/your-username/weather-app)
+Josh Hsu - josh7611@gmail.com
 
 ## 🙏 Acknowledgments
 
