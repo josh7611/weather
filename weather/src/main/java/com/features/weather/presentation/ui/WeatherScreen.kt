@@ -307,7 +307,7 @@ private fun WeeklyForecastSection(forecast: List<DailyWeather>) {
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = "7-Day Forecast",
+                text = "Weekly Forecast",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,

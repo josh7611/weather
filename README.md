@@ -9,7 +9,7 @@ A modern Android weather application built with **Jetpack Compose** and **Clean 
 ## ✨ Features
 
 - **Current Weather**: Real-time weather data including temperature, humidity, wind speed, and visibility
-- **7-Day Forecast**: Extended weather predictions with daily temperature ranges
+- **Weekly Forecast**: Extended weather predictions with daily temperature ranges
 - **City Search**: Search and save multiple cities for quick access
 - **Modern UI**: Material 3 design system with responsive layouts
 - **Offline Support**: Graceful handling of network connectivity issues
@@ -23,14 +23,14 @@ A modern Android weather application built with **Jetpack Compose** and **Clean 
   Your browser does not support the video tag.
 </video>
 
-*Demo showing weather app functionality including current weather display, city selection, and 7-day forecast navigation*
+*Demo showing weather app functionality including current weather display, city selection, and the weekly forecast navigation*
 
 ## 📱 Screenshots
 
 ### Main Weather Screen
 <img src="docs/images/weather_app_main_screen.png" alt="Weather App Main Screen" width="300"/>
 
-*Weather forecast display showing current conditions for New Taipei with 30°C temperature, weather details, and 7-day forecast*
+*Weather forecast display showing current conditions for New Taipei with 30°C temperature, weather details, and weekly forecast*
 
 ## 🏗️ Architecture
 
@@ -156,7 +156,7 @@ The app uses OpenWeatherMap API with the following endpoints:
 ### Implemented ✅
 - [x] Current weather display
 - [x] City search and selection
-- [x] 7-day weather forecast
+- [x] Weekly weather forecast
 - [x] Error handling with user feedback
 - [x] Material 3 design system
 - [x] Unit tests for core business logic
