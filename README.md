@@ -18,12 +18,15 @@ A modern Android weather application built with **Jetpack Compose** and **Clean 
 ## 🎬 Demo
 
 ### App in Action
-<video width="300" controls>
-  <source src="docs/demo/weather_app_demo.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
 
-*Demo showing weather app functionality including current weather display, city selection, and the weekly forecast navigation*
+**📹 [View Demo Video](docs/demo/weather_app_demo.mp4)**
+
+*Click the link above to download and view the demo video showing weather app functionality including current weather display, city selection, and weekly forecast navigation*
+
+**Note:** For the best viewing experience, you can:
+- Download the video file directly from the link above
+- Clone the repository to view the video locally
+- Convert to GIF format for inline viewing (coming soon)
 
 ## 📱 Screenshots
 
